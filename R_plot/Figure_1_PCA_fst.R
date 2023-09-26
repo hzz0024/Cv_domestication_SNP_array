@@ -140,7 +140,7 @@ source("individual_pca_functions.R")
 # vcf
 setwd("~/Dropbox/Mac/Documents/HG/Domestication/01_pca")
 vcftools  = "/Users/HG/Dropbox/Mac/Documents/HG/Github/BioinfoTools/vcftools_0.1.13/bin/vcftools";
-#system(paste(vcftools," --vcf genetyped_data_n_509_maf05_maxmiss095_popmiss095_hwe.recode.vcf --remove UMFS_2_outlier.txt --recode --recode-INFO-all --out genetyped_data_n_507_maf05_maxmiss095_popmiss095_hwe", sep=""))
+system(paste(vcftools," --vcf genetyped_data_n_539_maf05_maxmiss095_popmiss095_hwe_neutral_pruned.recode.vcf --keep pop_509.list --recode --recode-INFO-all --out genetyped_data_n_509_maf05_maxmiss095_popmiss095_hwe_neutral_pruned", sep=""))
 
 vcf.fn <- "genetyped_data_n_539_maf05_maxmiss095_popmiss095_hwe_neutral_pruned.recode.vcf"
 # VCF => GDS
@@ -162,8 +162,34 @@ tab <- data.frame(sample.id = pca$sample.id,
 print(tab)
 # output the tab contents for modification
 write.table(tab, "sample_eigen_539.txt", row.names=F, sep="\t", quote=F,col.names=T)
+
+# 509
+vcf.fn <- "genetyped_data_n_509_maf05_maxmiss095_popmiss095_hwe_neutral_pruned.recode.vcf"
+# VCF => GDS
+snpgdsVCF2GDS(vcf.fn, "genetyped_data_n_509_maf05_maxmiss095_popmiss095_hwe_neutral_pruned.recode.gds", method="biallelic.only")
+# summary
+snpgdsSummary("genetyped_data_n_509_maf05_maxmiss095_popmiss095_hwe_neutral_pruned.recode.gds")
+# Open the GDS file
+genofile <- snpgdsOpen("genetyped_data_n_509_maf05_maxmiss095_popmiss095_hwe_neutral_pruned.recode.gds")
+
+pca <- snpgdsPCA(genofile,autosome.only=FALSE)
+pc.percent <- pca$varprop*100
+head(round(pc.percent, 2))
+tab <- data.frame(sample.id = pca$sample.id,
+                  EV1 = pca$eigenvect[,1],    # the first eigenvector
+                  EV2 = pca$eigenvect[,2],    # the second eigenvector
+                  EV3 = pca$eigenvect[,3],    # the second eigenvector
+                  EV4 = pca$eigenvect[,4],    # the second eigenvector
+                  stringsAsFactors = FALSE)
+print(tab)
+# output the tab contents for modification
+write.table(tab, "sample_eigen_509.txt", row.names=F, sep="\t", quote=F,col.names=T)
+
+
+
+
+
 tab_pop = read.delim("sample_eigen_539_edit.txt", header = TRUE, sep='\t')
-tab_pop = read.delim("sample_eigen_509_edit.txt", header = TRUE, sep='\t')
 
 tab_pop$population_nonum = stringr::str_remove(tab_pop$pop, "[0-9]+")
 # count how many individuals in each population
@@ -172,13 +198,13 @@ tab_pop %>% count(pop)
 n <- 18
 #qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
 #col_divergent = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
-#                    MEW1         MEW2       LIW1      LIW2        DBW1       DBW2      NCW1        NCW2
-col_gradient <- c( "#0A2C86", "#849cc1",  "#1D92BD", "#8ad5d9", "#93c47d", "#bedbb1", "#a9a9a9", "#dddddd", 
-                   #  DBX1       DBX2      DBX3       UNC1        UNC2       UMFS       NYH1       NEH1       NEH2       MEH2
-                   "#f9476b", "#fb90a6","#fddae1", "#cf7fbc",  "#e2b2d6", "#fec155", "#C05805" , "#e1bb94", "#fbd0a5", "#b58383")
+#                    MEW1         MEW2       LIW1      LIW2        DBW1       DBW2      NCW1        NCW2      DBX1     
+col_gradient <- c( "#0A2C86", "#849cc1",  "#1D92BD", "#8ad5d9", "#93c47d", "#bedbb1", "#a9a9a9", "#dddddd","#f9476b", 
+                   #   DBX2      DBX3       UNC1        UNC2       UMFS       NYH1       NEH1       NEH2       MEH2
+                    "#fb90a6","#fddae1", "#cf7fbc",  "#e2b2d6", "#fec155", "#C05805" , "#e1bb94", "#fbd0a5", "#b58383")
 
 #col_gradient = viridis_pal(option = "C")(17)  # n = number of colors seeked
-#col_gradient = rep(c("#049DD9", "#F25C05"), c(9, 8))
+col_gradient = rep(c("#049DD9", "#F25C05"), c(9, 9))
 # PC1-2 for individual populations
 order1 = c("MEW1", "MEW2", "LIW1", "LIW2", "DBW1", "DBW2", "NCW1", "NCW2", "DBX1", "DBX2", "DBX3",  "UNC1", "UNC2", "UMFS", "NYH1", "NEH1", "NEH2", "MEH2")
 tab_pop$pop <-factor(tab_pop$pop, levels=order1)
@@ -187,7 +213,7 @@ order2 = c("Wild", "Selected")
 tab_pop$pop1 <-factor(tab_pop$pop1, levels=order2)
 
 p1 <- ggplot(tab_pop, aes(x = EV1, y = EV2)) + 
-  geom_mark_ellipse(aes(fill = pop, label = pop, color=pop), show.legend = FALSE, alpha = 0.2, label.fontface = c("plain"), con.cap=0, label.buffer = unit(0, 'mm'))+
+  #geom_mark_ellipse(aes(fill = pop, label = pop, color=pop), show.legend = FALSE, alpha = 0.2, label.fontface = c("plain"), con.cap=0, label.buffer = unit(0, 'mm'))+
   geom_point(size=2, aes(color=pop, shape=pop1), alpha = 0.8)+
   scale_color_manual(values=col_gradient , name="Population/Line") +
   scale_shape_manual(values=c(15, 17), name="Origin") +
@@ -209,14 +235,12 @@ p1 <- ggplot(tab_pop, aes(x = EV1, y = EV2)) +
 
 p2 <- p1 + 
   #stat_ellipse(aes(fill = pop), geom = 'polygon', level = 0.95, alpha = 0.1, show.legend = F) +
-  #scale_fill_manual(values = c("#F25C05", "#049DD9"))
   scale_fill_manual(values = col_gradient) +
   guides(colour = guide_legend(order = 2), 
          shape = guide_legend(override.aes = list(shape = c(0,2)),
                               order = 1))
 p2
-graph2ppt(file="PCA_539_1",width=4,height=3)
-graph2ppt(file="PCA_509_1",width=8,height=6)
+graph2ppt(file="PCA_539_1",width=5,height=3)
 
 jpeg("PCA_509.jpg", width = 8, height = 6, units = 'in', res = 300)
 p2
@@ -242,13 +266,14 @@ col_gradient <- c( "#0A2C86", "#849cc1",  "#1D92BD", "#8ad5d9", "#93c47d", "#bed
 order1 = c("MEW1", "MEW2", "LIW1", "LIW2", "DBW1", "DBW2", "NCW1", "NCW2", "DBX1", "DBX2", "DBX3",  "UNC1", "UNC2", "UMFS", "NEH1", "NEH2", "MEH2")
 tab_pop$pop <-factor(tab_pop$pop, levels=order1)
 # for 2 clusters
-col_gradient = rep(c("#325A98", "#F62A00"), c(9, 8))
+col_gradient = rep(c("#049DD9", "#F25C05"), c(8, 9))
+#col_gradient = rep(c("#325A98", "#F62A00"), c(9, 8))
 order2 = c("Wild", "Selected")
 tab_pop$pop1 <-factor(tab_pop$pop1, levels=order2)
 
 p1 <- ggplot(tab_pop, aes(x = EV1, y = EV2)) + 
-  geom_mark_ellipse(aes(fill = pop, label = pop, color=pop), show.legend = FALSE, alpha = 0.2, label.fontface = c("plain"), con.cap=0, label.buffer = unit(0, 'mm'))+
-  geom_point(size=2, aes(color=pop, shape=pop1), alpha = 0.8)+
+  #geom_mark_ellipse(aes(fill = pop, label = pop, color=pop), show.legend = FALSE, alpha = 0.2, label.fontface = c("plain"), con.cap=0, label.buffer = unit(0, 'mm'))+
+  geom_point(size=3, aes(color=pop, shape=pop1), alpha = 0.6)+
   scale_color_manual(values=col_gradient , name="Population/Line") +
   scale_shape_manual(values=c(15, 17), name="Origin") +
   guides(fill = guide_legend(override.aes=list(shape=17)))+
@@ -268,15 +293,15 @@ p1 <- ggplot(tab_pop, aes(x = EV1, y = EV2)) +
         axis.text.y = element_text(size=12))
 
 p2 <- p1 + 
-  #stat_ellipse(aes(fill = pop), geom = 'polygon', level = 0.95, alpha = 0.1, show.legend = F) +
-  #scale_fill_manual(values = c("#F25C05", "#049DD9"))
+  stat_ellipse(aes(fill = pop), geom = 'polygon', level = 0.95, alpha = 0.1, show.legend = F) +
+  #scale_fill_manual(values = c("#F25C05", "#049DD9"))+
   scale_fill_manual(values = col_gradient) +
   guides(colour = guide_legend(order = 2), 
          shape = guide_legend(override.aes = list(shape = c(0,2)),
                               order = 1))
 p2
 
-graph2ppt(file="PCA_509_red_blue",width=8,height=6)
+graph2ppt(file="PCA_509_orange_blue",width=8,height=6)
 
 # Fst matrix 
 
@@ -308,4 +333,29 @@ Heatmap(plot_dt, name = "Pairwise Fst",
         top_annotation = HeatmapAnnotation(Group = fa, col = list(Group = fa_col)))
 
 graph2ppt(file="Pairwise_fst",width=10,height=6)
+
+# Calculate the ellipse size for each population 
+# Plot object
+# p = ggplot (data, aes (x = x, y = y))+
+#   geom_point()+
+#   stat_ellipse(segments=201) # Default is 51. We use a finer grid for more accurate area.
+
+size=c()
+for (i in seq(1,17)) {
+  # Get ellipse coordinates from plot for each group
+  el = pb$data[[2]][which(pb$data[[2]]$group == i),][c("x","y")]
+  # Center of ellipse
+  ctr = MASS::cov.trob(el)$center  # Per @Roland's comment
+  
+  # Calculate distance to center from each point on the ellipse
+  dist2center <- sqrt(rowSums((t(t(el)-ctr))^2))
+  
+  # Calculate area of ellipse from semi-major and semi-minor axes. 
+  # These are, respectively, the largest and smallest values of dist2center. 
+  size_ = pi*min(dist2center)*max(dist2center)
+  size = c(size, size_)
+}
+
+ellipse_size = data.frame(size, levels(tab_pop$pop))
+
 

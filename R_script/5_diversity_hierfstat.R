@@ -18,12 +18,13 @@ setwd("~/Dropbox/Mac/Documents/HG/Domestication/13_diversity_Fis_hierfstat")
 # load the population information
 pop_info <- read.table("pop_539_sample_list.txt", header=TRUE, sep="\t", stringsAsFactors = TRUE)
 pop_info$Pop_correct = factor(pop_info$Pop_correct, levels=c("MEW1", "MEW2", "LIW1", "LIW2", "DBW1", "DBW2", "NCW1", "NCW2", "DBX1", "DBX2", "DBX3", "UNC1", "UNC2", "UMFS", "NYH1", "NEH1", "NEH2", "MEH2"))
+pop_info$Pop_correct = factor(pop_info$Pop_correct.1, levels=c("Native", "Selected"))
 # load vcf file
 vcftools  = "/Users/HG/Dropbox/Mac/Documents/HG/Github/BioinfoTools/vcftools_0.1.13/bin/vcftools";
 #system(paste(vcftools," --vcf genetyped_data_n_509_maf05_maxmiss095_popmiss095_hwe_pruned.recode.vcf --remove UMFS_2_outlier.txt --recode --recode-INFO-all --out genetyped_data_n_507_maf05_maxmiss095_popmiss095_hwe_pruned", sep=""))
 
 #vcf_file = "genetyped_data_n_509_maf05_maxmiss095_popmiss095_hwe_pruned_no_outlier.recode.vcf"
-vcf_file = "genetyped_data_n_539_maf05_maxmiss095_popmiss095_hwe_neutral_pruned_1K.recode.vcf"
+vcf_file = "genetyped_data_n_539_maf05_maxmiss095_popmiss095_hwe_neutral_pruned_10K.recode.vcf"
 vcf <- read.vcfR(vcf_file, verbose = FALSE)
 Mydata1 <- vcfR2genind(vcf)
 Mydata1@pop <- pop_info$Pop_correct

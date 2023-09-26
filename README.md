@@ -1,7 +1,14 @@
-# Cv_domestication_SNP_array
+# Consequences of domestication in Eastern oyster
 
-This repo includes command lines and R codes for eastern oyster domestication study
+#### Repository for Zhao et al. 2023 "Consequences of domestication in Eastern oyster: insights from whole genome analyses"
 
+Folders below lists the code and raw vcf used for domestication study:
+
+|Folder Name| Contents|
+|-----------|---------|
+|[R_script](/R_script)| Contains R code for each of the data analyses step |
+|[R_plot](/R_plot)| Contains R code and output for Figures in the manuscript|
+|[Raw_vcf](/Raw_vcf)| Contains raw vcf for domestication study | 
 
 [1_pcadapt.R](https://github.com/hzz0024/Cv_domestication_SNP_array/blob/main/R_script/1_pcadapt.R)
 

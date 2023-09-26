@@ -59,8 +59,8 @@ format_LOC <- function(fname){
   write.table(unique_list, file = paste0(fname, ".unique.LOC.txt"), sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
 }
 
-system(paste("python3 extract_gene_V2.py -i Gene_annotation_all.txt -t Predictor_loci_classification_best_10perc_unique_37.txt -o Predictor_loci_classification_best_10perc_unique_37.gene.txt"))
-format_LOC("Predictor_loci_classification_best_10perc_unique_37.gene.txt")
+system(paste("python3 extract_gene_V2.py -i Gene_annotation_all.txt -t union_outliers_1174.bed -o union_outliers_1174.gene.txt"))
+format_LOC("union_outliers_1174.gene.txt")
 
 system(paste("python3 extract_gene_V2.py -i Gene_annotation_all.txt -t Predictor_loci_classification_best_10perc_unique_37_10K.txt -o Predictor_loci_classification_best_10perc_unique_37_10K.gene.txt"))
 format_LOC("Predictor_loci_classification_best_10perc_unique_37_10K.gene.txt")
@@ -92,7 +92,7 @@ install.packages('./org.My.eg.db_1.0.tar.gz',
 library(org.My.eg.db, lib = 'R_Library')
 
 # load gene ID
-shared_SNP <- read.delim("Predictor_loci_classification_best_10perc_unique_37_10K.gene.txt.unique.LOC.txt", header = F, sep='\t')$V1
+shared_SNP <- read.delim("union_outliers_1174.gene.txt.unique.LOC.txt", header = F, sep='\t')$V1
 shared_SNP <- read.delim("Predictor_loci_classification_best_10perc_unique_37.gene.unique.LOC.txt", header = F, sep='\t')$V1
 
 # GO enrichment

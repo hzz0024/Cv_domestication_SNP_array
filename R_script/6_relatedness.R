@@ -108,3 +108,7 @@ p <- ggplot(plotdat, aes(x=Population, y=relat, fill=Population)) +
 #        legend.position = "none")
 p
 graph2ppt(file="relatdeness",width=10,height=6)
+
+# Ne vs Nb
+Ne_Nb_mean <- read.table("Ne_summary.txt", header=TRUE, sep="\t", stringsAsFactors = TRUE)
+wilcox.test(Ne_Nb_mean$Ne,Ne_Nb_mean$Nb)
