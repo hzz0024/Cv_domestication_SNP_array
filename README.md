@@ -10,6 +10,17 @@ Folders below lists the code and raw vcf used for domestication study:
 |[R_plot](/R_plot)| Contains R code and output for Figures in the manuscript|
 |[Raw_vcf](/Raw_vcf)| Contains raw vcf for domestication study | 
 
+#### Name of SNP subsets, number of SNPs and their usage. 
+
+|     SNP subset name      |     Analyses                                                                                                                                |     Number of SNPs |     Source                                                                                                                   |   |
+|--------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|--------------------|------------------------------------------------------------------------------------------------------------------------------|---|
+|     Full SNPs            |     Genetic scan (PCAdapt and OutFLANK); LD decay (PopLDdecay); runs of homozygosity (Plink)                                                |     141,676        |     SNPs after quality filtering                                                                                             |   |
+|     Clumped SNPs         |     Genetic scan (PCAdapt and OutFLANK)                                                                                                     |     106,109        |     Full SNPs after LD clumping                                                                                              |   |
+|     Combined outliers    |     Individual assignment (Random forest)                                                                                                   |     1,174          |     Union of PCAdapt and OutFLANK outliers (q < 0.05)                                                                        |   |
+|     RF outliers          |     DAPC (Adegenet); RF assignment                                                                                                          |     37             |     Random forest (RF) Outliers identifed from combined outliers                                                             |   |
+|     Clumped neutral SNPs |     Population structure (PCA and STRUCTURE); genetic diversity (Ho, He, Ar, and FST calculated by hierfstat); relatedness (Demerelate);    |     105,672        |     Excluding all PCAdapt and OutFLANK outliers in the full SNPs, followed by LD clumping (10K window size with r2 > 0.2)    |   |
+|     Random 5K SNPs       |     NeEstimator                                                                                                                             |     5,000          |     Excluding all PCAdapt and OutFLANK outliers in the full SNPs, followed by randomly selecting 5K markers                  |   |
+
 [1_pcadapt.R](https://github.com/hzz0024/Cv_domestication_SNP_array/blob/main/R_script/1_pcadapt.R)
 
 R code for PCAdapt outlier identification. The “best practice” approach used the naïve clumped SNPs for neutral parameterization and performed the statistical test on the full SNPs
