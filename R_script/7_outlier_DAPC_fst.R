@@ -15,6 +15,9 @@ plink  = "/Users/HG/Dropbox/Mac/Documents/HG/Domestication/14_ROH/plink";
 #system(paste(vcftools," --vcf genetyped_data_n_509_maf05_maxmiss095_popmiss095_hwe.recode.vcf --bed pop_n_477_pcadapt_outflank.shared.outlier.igv_Dom_Wild.sliding.zfst.outlier.merged.igv.outlier.merged.igv --recode --recode-INFO-all --out n_509_shared_outliers", sep=""))
 system(paste(vcftools," --vcf genetyped_data_n_539_maf05_maxmiss095_popmiss095_hwe.recode.vcf --snps Predictor_loci_classification_best_10perc_unique_37.txt --recode --recode-INFO-all --out n_539_shared_outliers", sep=""))
 
+system(paste(vcftools," --vcf genetyped_data_n_539_maf05_maxmiss095_popmiss095_hwe.recode.vcf --snps union_outliers_1174.list --recode --recode-INFO-all --out n_539_shared_outliers", sep=""))
+
+
 # VCFtools - v0.1.13
 # (C) Adam Auton and Anthony Marcketta 2009
 # 
